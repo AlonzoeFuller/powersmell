@@ -1,8 +1,16 @@
-# Retrieves System Name
+# Retrieves System Info
 $Name = $env:COMPUTERNAME
-
-# OS version info
 $Version = (get-computerInfo | Select-Object OsVersion).osversion
-
-# Logical Disk Count
 $DiskCount = (Get-CimInstance CIM_LogicalDisk).Count
+$FreeSpace = (Get-CimInstance CIM_LogicalDisk).FreeSpace
+
+#Make Our own custom object
+$obj = [PSCustomObject]@{
+    ComputerName = $Name
+    DiskCount = $DiskCount
+    OSVersion = $Version
+    "GB Free" = $FreeSpace / 1Gb
+}
+
+#Show Output
+Write-Output $obj
